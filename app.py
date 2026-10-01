@@ -138,7 +138,9 @@ if ferramenta == "🚀 Gerador Completo (Prancha IMASUL/Poços)":
         ).add_to(m)
         
         if gdf_interativo is not None:
-            folium.GeoJson(gdf_interativo, style_function=lambda x: {'color': '#00ff00', 'fillOpacity': 0.1, 'weight': 3}).add_to(m)
+            gdf_interativo = gdf_interativo[gdf_interativo.geometry.notnull() & ~gdf_interativo.geometry.is_empty]
+            if not gdf_interativo.empty:
+                folium.GeoJson(gdf_interativo, style_function=lambda x: {'color': '#00ff00', 'fillOpacity': 0.1, 'weight': 3}).add_to(m)
             
         if st.session_state["coord_entrada"]:
             folium.Marker(st.session_state["coord_entrada"], tooltip="Entrada", icon=folium.Icon(color='green', icon='info-sign')).add_to(m)
