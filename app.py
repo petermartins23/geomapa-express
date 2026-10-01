@@ -15,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from core.parser import carregar_arquivo, obter_centroide
 from core.localizacao import identificar_municipio
-from core.rotas import gerar_relatorio_acesso, geocodificar_endereco
 
 st.set_page_config(
     page_title="GeoMapa Express",
