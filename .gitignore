@@ -1,8 +1,26 @@
+# Ambientes virtuais e caches
+.venv/
 venv/
 __pycache__/
 *.pyc
-*.pdf
-*.png
-base dados/
-dados/
+
+# Variaveis de ambiente e segredos
 .env
+.streamlit/secrets.toml
+.idea/
+.vscode/
+.DS_Store
+
+# Ignorar dados de clientes na raiz (segurança)
+*.kml
+*.kmz
+*.geojson
+*.gpkg
+*.shp
+
+# EXCEÇÃO VITAL: Garantir que os mapas base de MS subam para o servidor
+!dados/estado_ms.geojson
+!dados/municipios_ms.geojson
+
+# Ignorar outputs gerados
+*.pdf
