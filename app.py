@@ -109,7 +109,7 @@ if ferramenta == "🚀 Gerador Completo (Prancha IMASUL/Poços)":
         if "last_click" not in st.session_state: st.session_state["last_click"] = None
 
         st.markdown('<div class="secao"><h4>③ Coordenadas Geográficas (Mapa Interativo)</h4>', unsafe_allow_html=True)
-        st.caption("Faça o upload do KML acima e **clique no mapa** para preencher as coordenadas automaticamente.")
+        st.caption("Faça o upload do arquivo acima e **clique no mapa** para preencher as coordenadas automaticamente.")
         
         modo_clique = st.radio("O que você vai marcar com o dedo no mapa agora?", ["📍 Entrada Principal", "🏡 Sede / Atividade"], horizontal=True)
 
@@ -138,9 +138,11 @@ if ferramenta == "🚀 Gerador Completo (Prancha IMASUL/Poços)":
         ).add_to(m)
         
         if gdf_interativo is not None:
-            gdf_interativo = gdf_interativo[gdf_interativo.geometry.notnull() & ~gdf_interativo.geometry.is_empty]
-            if not gdf_interativo.empty:
-                folium.GeoJson(gdf_interativo, style_function=lambda x: {'color': '#00ff00', 'fillOpacity': 0.1, 'weight': 3}).add_to(m)
+            import geopandas as gpd
+            # Converte a lista em Tabela e já filtra os pontos invisíveis que crasham o Folium
+            gdf_filtrado = gpd.GeoDataFrame(geometry=[g for g in gdf_interativo if g and not g.is_empty], crs="EPSG:4326")
+            if not gdf_filtrado.empty:
+                folium.GeoJson(gdf_filtrado, style_function=lambda x: {'color': '#00ff00', 'fillOpacity': 0.1, 'weight': 3}).add_to(m)
             
         if st.session_state["coord_entrada"]:
             folium.Marker(st.session_state["coord_entrada"], tooltip="Entrada", icon=folium.Icon(color='green', icon='info-sign')).add_to(m)
@@ -182,7 +184,7 @@ if ferramenta == "🚀 Gerador Completo (Prancha IMASUL/Poços)":
     with col2:
         if gerar_completo:
             if not arquivo_area or not endereco_partida:
-                st.warning("⚠️ O KML da fazenda e o Endereço de Partida são obrigatórios.")
+                st.warning("⚠️ O KML/GeoJSON da fazenda e o Endereço de Partida são obrigatórios.")
             else:
                 try:
                     with st.spinner("⏳ Processando área, traçando rota e montando a prancha PDF..."):
